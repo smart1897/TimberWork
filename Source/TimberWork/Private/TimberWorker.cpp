@@ -29,9 +29,22 @@ void ATimberWorker::BeginPlay()
 		ATimberWorkerController* AIRef = Cast<ATimberWorkerController>(GetController());
 		if (AIRef != nullptr)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 250;
+			GetCharacterMovement()->MaxWalkSpeed = 400;
 			AIRef->Patrol();
 		}
+	}
+	else if (NPCType == ENPCType::WoodCutter)
+	{
+		ATimberWorkerController* AIRef = Cast<ATimberWorkerController>(GetController());
+		if (AIRef != nullptr)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 250;
+			AIRef->WoodCutter();
+		}
+	}
+	else if (NPCType == ENPCType::WoodDepositor)
+	{
+		Tags.Add("Depositor");
 	}
 }
 

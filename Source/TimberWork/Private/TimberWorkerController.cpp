@@ -28,3 +28,8 @@ void ATimberWorkerController::Patrol()
 {
 	RunBehaviorTree(PatrolBehaviorTree);
 }
+
+void ATimberWorkerController::WoodCutter()
+{
+	RunBehaviorTree(CutterBehaviorTree);
+}

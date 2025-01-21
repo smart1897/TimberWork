@@ -26,6 +26,12 @@ public:
 	UFUNCTION()
 	void Patrol();
 
+	UFUNCTION()
+	void WoodCutter();
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI",meta=(AllowPrivateAccess=true))
 	TObjectPtr<UBehaviorTree> PatrolBehaviorTree;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI",meta=(AllowPrivateAccess=true))
+	TObjectPtr<UBehaviorTree> CutterBehaviorTree;
 };
