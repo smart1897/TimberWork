@@ -23,13 +23,3 @@ void ATimberWorkerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-
-void ATimberWorkerController::Patrol()
-{
-	RunBehaviorTree(PatrolBehaviorTree);
-}
-
-void ATimberWorkerController::WoodCutter()
-{
-	RunBehaviorTree(CutterBehaviorTree);
-}

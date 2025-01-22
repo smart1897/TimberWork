@@ -10,6 +10,8 @@ enum class ENPCType : uint8
 	WoodDepositor
 };
 
+
+
 UCLASS()
 class TIMBERWORK_API UGlobal: public UObject
 {

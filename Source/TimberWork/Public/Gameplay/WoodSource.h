@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/WoodComponent.h"
 #include "GameFramework/Actor.h"
 #include "WoodSource.generated.h"
 
@@ -22,4 +23,7 @@ protected:
 public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UWoodComponent> WoodComponent;
 };

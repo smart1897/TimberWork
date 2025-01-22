@@ -3,7 +3,11 @@
 
 #include "TimberWork/Public/TimberWorker.h"
 
+#include "TimberWorkInstance.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TimberWork/Public/TimberWorkerController.h"
 
 // Sets default values
@@ -12,9 +16,18 @@ ATimberWorker::ATimberWorker()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	NPCType = ENPCType::Security;
-
 	PatrolComponent = CreateDefaultSubobject<UPatrolComponent>(TEXT("PatrolComponent"));
+
+	WoodComponent = CreateDefaultSubobject<UWoodComponent>(TEXT("WoodComponent"));
+
+	WoodLogComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WoodLogComponent"));
+
+	WoodLogComponent->SetupAttachment(RootComponent);
+
+	WoodLogComponent->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
+	WoodLogComponent->SetRelativeLocation(FVector(-20.0f, 0.0f, 50.0f));
+
+	WoodLogComponent->SetVisibility(false);
 
 	AIControllerClass = ATimberWorkerController::StaticClass();
 }
@@ -24,27 +37,37 @@ void ATimberWorker::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (NPCType == ENPCType::Security)
+	if (const UTimberWorkInstance* GI = Cast<UTimberWorkInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
-		ATimberWorkerController* AIRef = Cast<ATimberWorkerController>(GetController());
-		if (AIRef != nullptr)
+		if (GI != nullptr)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 400;
-			AIRef->Patrol();
+			TimberResourceData = GI->DataAsset.FindRef(NPCType);
 		}
 	}
-	else if (NPCType == ENPCType::WoodCutter)
+
+	if (TimberResourceData != nullptr)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = TimberResourceData->MaxSpeed;
+
+		GetMesh()->SetMaterial(0, TimberResourceData->Material);
+
 		ATimberWorkerController* AIRef = Cast<ATimberWorkerController>(GetController());
 		if (AIRef != nullptr)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = 250;
-			AIRef->WoodCutter();
+		{				
+			AIRef->RunBehaviorTree(TimberResourceData->BehaviorTree);
+
+			
+			AIRef->GetBlackboardComponent()->SetValueAsFloat("LoadUnloadDuration",TimberResourceData->LoadUnloadDuration);
+			AIRef->GetBlackboardComponent()->SetValueAsFloat("WoodPerSec",TimberResourceData->WoodPerSec);
+
 		}
+
+		Tags.Add(*TimberResourceData->Tag);
 	}
-	else if (NPCType == ENPCType::WoodDepositor)
+
+	if (WoodComponent != nullptr)
 	{
-		Tags.Add("Depositor");
+		WoodComponent->OnUpdateWood.AddUniqueDynamic(this, &ATimberWorker::OnUpdateWood);
 	}
 }
 
@@ -52,5 +75,24 @@ void ATimberWorker::BeginPlay()
 void ATimberWorker::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ATimberWorker::OnUpdateWood()
+{
+	if (WoodComponent != nullptr)
+	{
+		if (WoodComponent->GetWood() <= 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = TimberResourceData->MaxSpeed;
+			WoodLogComponent->SetVisibility(false);
+			UAIBlueprintHelperLibrary::GetBlackboard(this)->SetValueAsBool("HasWood",false);
+		}
+		else
+		{
+			GetCharacterMovement()->MaxWalkSpeed = TimberResourceData->MaxSpeedWithWood;
+			WoodLogComponent->SetVisibility(true);
+			UAIBlueprintHelperLibrary::GetBlackboard(this)->SetValueAsBool("HasWood",true);
+		}
+	}
 }
 

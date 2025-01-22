@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/PatrolComponent.h"
+#include "Components/WoodComponent.h"
 #include "GameFramework/Character.h"
+#include "Gameplay/TimberResourceData.h"
 #include "TimberWork/Globals.h"
 #include "TimberWorker.generated.h"
 
@@ -24,10 +26,23 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UPatrolComponent> PatrolComponent;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UWoodComponent> WoodComponent;
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	void OnUpdateWood();
+
 	UPROPERTY(EditAnywhere)
 	ENPCType NPCType;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UStaticMeshComponent> WoodLogComponent;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UTimberResourceData> TimberResourceData;
 };

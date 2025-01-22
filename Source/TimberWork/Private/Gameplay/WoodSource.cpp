@@ -11,6 +11,8 @@ AWoodSource::AWoodSource()
 	PrimaryActorTick.bCanEverTick = false;
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 
+	WoodComponent = CreateDefaultSubobject<UWoodComponent>(TEXT("WoodComponent"));
+
 	Tags.Add(FName("Wood"));
 }
 
