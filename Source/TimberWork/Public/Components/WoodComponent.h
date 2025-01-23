@@ -36,7 +36,19 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnUpdateWood OnUpdateWood;
 
+	UPROPERTY(BlueprintAssignable)
+	FGodMode OnCuttingWood;
+	
+	UFUNCTION(BlueprintCallable)
+	void SetCuttingWood(bool WoodValue);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsCuttingWood(){ return CuttingWood; }
+
 private:
 	UPROPERTY()
 	float Wood;
+
+	UPROPERTY()
+	bool CuttingWood;
 };

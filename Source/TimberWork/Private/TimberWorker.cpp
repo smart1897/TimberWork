@@ -32,10 +32,15 @@ ATimberWorker::ATimberWorker()
 	PatrolComponent = CreateDefaultSubobject<UPatrolComponent>(TEXT("PatrolComponent"));
 
 	WoodComponent = CreateDefaultSubobject<UWoodComponent>(TEXT("WoodComponent"));
+	
 	WoodLogComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WoodLogComponent"));
 	WoodLogComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WoodLogComponent->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	WoodLogComponent->SetVisibility(false);
+
+	AxeComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AxeComponent"));
+	AxeComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AxeComponent->SetVisibility(false);
 
 	AIControllerClass = ATimberWorkerController::StaticClass();
 }
@@ -48,6 +53,11 @@ void ATimberWorker::BeginPlay()
 	WoodLogComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative, true), "clavicle_lSocket");
 	WoodLogComponent->SetRelativeRotation(FRotator(0, -90, 0));
 	WoodLogComponent->SetRelativeLocation(FVector(0.0f, -20.0f, 0.0f));
+
+	AxeComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative, true), "weapon_rSocket");
+	AxeComponent->SetRelativeRotation(FRotator(300, 140, -57));
+	AxeComponent->SetRelativeLocation(FVector(-2.0f, 12.0f, -8.0f));
+	AxeComponent->SetRelativeScale3D(FVector(3.0f, 3.0f, 3.0f));
 	
 	if (const UTimberWorkInstance* GI = Cast<UTimberWorkInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
@@ -79,6 +89,7 @@ void ATimberWorker::BeginPlay()
 
 	if (WoodComponent != nullptr)
 	{
+		WoodComponent->OnCuttingWood.AddUniqueDynamic(this, &ATimberWorker::OnCuttingWood);
 		WoodComponent->OnUpdateWood.AddUniqueDynamic(this, &ATimberWorker::OnUpdateWood);
 	}
 }
@@ -105,6 +116,14 @@ void ATimberWorker::OnUpdateWood()
 			WoodLogComponent->SetVisibility(true);
 			UAIBlueprintHelperLibrary::GetBlackboard(this)->SetValueAsBool("HasWood",true);
 		}
+	}
+}
+
+void ATimberWorker::OnCuttingWood(const bool bValue)
+{
+	if (AxeComponent != nullptr)
+	{
+		AxeComponent->SetVisibility(bValue);
 	}
 }
 

@@ -19,7 +19,7 @@ public:
 	// Sets default values for this pawn's properties
 	ATimberWorker();
 
-protected:
+protected:	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -34,7 +34,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UPatrolComponent> PatrolComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<UWoodComponent> WoodComponent;
 	
 public:
@@ -44,11 +44,17 @@ public:
 	UFUNCTION()
 	void OnUpdateWood();
 
+	UFUNCTION()
+	void OnCuttingWood(bool bValue);
+
 	UPROPERTY(EditAnywhere)
 	ENPCType NPCType;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> WoodLogComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UStaticMeshComponent> AxeComponent;
 
 private:
 	UPROPERTY()

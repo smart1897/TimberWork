@@ -52,3 +52,12 @@ void UWoodComponent::RemoveWood(float WoodValue)
 		OnUpdateWood.Broadcast();
 	}
 }
+
+void UWoodComponent::SetCuttingWood(bool WoodValue)
+{
+	CuttingWood = WoodValue;
+	if (OnCuttingWood.IsBound())
+	{
+		OnCuttingWood.Broadcast(CuttingWood);
+	}
+}
