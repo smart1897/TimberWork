@@ -131,6 +131,7 @@ void ATimberSpectate::Spectate(const FInputActionValue& Value)
 		if (APlayerController* PC = Cast<APlayerController>(Controller); PC != nullptr)
 		{
 			PC->SetViewTargetWithBlend(this,1.0f);
+			PC->SetShowMouseCursor(true);
 			Spectating = false;
 		}
 	}
@@ -169,6 +170,7 @@ void ATimberSpectate::Spectate(const FInputActionValue& Value)
 				if (Worker != nullptr)
 				{
 					PC->SetViewTargetWithBlend(Worker,1.0f);
+					PC->SetShowMouseCursor(false);
 					Spectating = true;
 				}
 			}
