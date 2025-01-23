@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "TimberWork/Globals.h"
 #include "WoodComponent.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdateWood);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class TIMBERWORK_API UWoodComponent : public UActorComponent

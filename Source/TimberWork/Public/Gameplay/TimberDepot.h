@@ -21,6 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+
+	UFUNCTION()
+	void OnUpdateWood();
+	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 

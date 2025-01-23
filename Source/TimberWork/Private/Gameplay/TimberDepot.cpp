@@ -3,6 +3,9 @@
 
 #include "Gameplay/TimberDepot.h"
 
+#include "TimberHUD.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ATimberDepot::ATimberDepot()
 {
@@ -20,5 +23,20 @@ ATimberDepot::ATimberDepot()
 void ATimberDepot::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (WoodComponent != nullptr)
+	{
+		WoodComponent->OnUpdateWood.AddUniqueDynamic(this, &ATimberDepot::OnUpdateWood);
+	}	
+}
+
+void ATimberDepot::OnUpdateWood()
+{
+	if (WoodComponent != nullptr)
+	{
+		if (const ATimberHUD * HUDRef = UGameplayStatics::GetPlayerController(this, 0)->GetHUD<ATimberHUD>(); HUDRef != nullptr)
+		{
+			HUDRef->UpdateWood.Broadcast(WoodComponent->GetWood());
+		}
+	}
 }

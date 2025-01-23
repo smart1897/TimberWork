@@ -9,8 +9,11 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GM_TimberWork.h"
 #include "InputActionValue.h"
-
+#include "TimberHUD.h"
+#include "TimberSpectate.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ATimberManager::ATimberManager()
@@ -74,6 +77,8 @@ void ATimberManager::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATimberManager::Move);
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATimberManager::Look);
+		// Looking
+		EnhancedInputComponent->BindAction(GodModeAction, ETriggerEvent::Triggered, this, &ATimberManager::GodMode);
 	}
 	else
 	{
@@ -114,6 +119,32 @@ void ATimberManager::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ATimberManager::GodMode(const FInputActionValue& Value)
+{
+	if (const auto GameMode = GetWorld()->GetAuthGameMode<AGM_TimberWork>())
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		FVector Loc = GetActorLocation() + FVector(0, 0, 1000);
+		ATimberSpectate* Ref = GetWorld()->SpawnActor<ATimberSpectate>(GameMode->SpectatorClass,Loc,GetActorRotation(),SpawnParameters);
+		if (Ref != nullptr)
+		{
+			Ref->SetMangerRef(this);
+			Controller->Possess(Ref);
+
+			if (APlayerController* PC = Cast<APlayerController>(Controller); PC != nullptr)
+			{
+				PC->bShowMouseCursor = true;
+			}
+			
+			if (const ATimberHUD * HUDRef = UGameplayStatics::GetPlayerController(this, 0)->GetHUD<ATimberHUD>(); HUDRef != nullptr)
+			{
+				HUDRef->OnGodMode.Broadcast(true);
+			}
+		}
 	}
 }
 
