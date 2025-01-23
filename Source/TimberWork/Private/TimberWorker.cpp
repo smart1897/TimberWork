@@ -32,14 +32,9 @@ ATimberWorker::ATimberWorker()
 	PatrolComponent = CreateDefaultSubobject<UPatrolComponent>(TEXT("PatrolComponent"));
 
 	WoodComponent = CreateDefaultSubobject<UWoodComponent>(TEXT("WoodComponent"));
-
 	WoodLogComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WoodLogComponent"));
-
-	WoodLogComponent->SetupAttachment(RootComponent);
-
+	WoodLogComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WoodLogComponent->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
-	WoodLogComponent->SetRelativeLocation(FVector(-20.0f, 0.0f, 50.0f));
-
 	WoodLogComponent->SetVisibility(false);
 
 	AIControllerClass = ATimberWorkerController::StaticClass();
@@ -50,6 +45,10 @@ void ATimberWorker::BeginPlay()
 {
 	Super::BeginPlay();
 
+	WoodLogComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative, true), "clavicle_lSocket");
+	WoodLogComponent->SetRelativeRotation(FRotator(0, -90, 0));
+	WoodLogComponent->SetRelativeLocation(FVector(0.0f, -20.0f, 0.0f));
+	
 	if (const UTimberWorkInstance* GI = Cast<UTimberWorkInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
 		if (GI != nullptr)
