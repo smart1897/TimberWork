@@ -39,6 +39,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SpectateAction;
 
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* LookAction;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,6 +53,9 @@ protected:
 	/** Called for movement input */
 	void Zoom(const FInputActionValue& Value);
 
+	/** Called for looking input */
+	void Look(const FInputActionValue& Value);
+	
 	/** Called for movement input */
 	void Rotate(const FInputActionValue& Value);
 
@@ -67,6 +74,9 @@ public:
 
 	/** Called for movement input */
 	void SetMangerRef(ATimberManager* Ref){ ManagerRef = Ref;}
+
+	UFUNCTION(BlueprintCallable)
+	bool IsSpectating() { return Spectating; }
 
 private:
 	UPROPERTY()

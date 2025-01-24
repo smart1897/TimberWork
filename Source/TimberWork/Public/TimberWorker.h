@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "Components/PatrolComponent.h"
 #include "Components/WoodComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/TimberResourceData.h"
 #include "TimberWork/Globals.h"
 #include "TimberWorker.generated.h"

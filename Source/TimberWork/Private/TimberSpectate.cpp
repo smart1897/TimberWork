@@ -54,6 +54,23 @@ void ATimberSpectate::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 		// Spectate
 		EnhancedInputComponent->BindAction(SpectateAction, ETriggerEvent::Started, this, &ATimberSpectate::Spectate);
+
+		// Looking
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATimberSpectate::Look);
+	}
+}
+
+void ATimberSpectate::Look(const FInputActionValue& Value)
+{	
+	if (Spectating)
+	{
+		// input is a Vector2D
+		FVector2D LookAxisVector = Value.Get<FVector2D>();
+		if (Controller != nullptr)
+		{
+			// add yaw and pitch input to controller
+			AddControllerYawInput(LookAxisVector.X);
+		}
 	}
 }
 
